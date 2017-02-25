@@ -1,3 +1,27 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container">
+  <h1 class="addBtn" (click)="addTopic()">+</h1>
+  <h1>Current Topics</h1>
+
+  <div class="row">
+    <div *ngFor="let topic of currentTopics"
+         class="col-xl-4"
+    >
+      <span *ngIf="editTopic !== topic" class = "editBtn" (click)="onSelect(topic)">Edit</span>
+      <span *ngIf="editTopic === topic" class = "editBtn" (click)="onSelect(topic)">Save</span>
+      <span *ngIf="editTopic === topic" class = "delBtn" (click)="deleteTopic(topic)">Delete</span>
+      <div class ="knTopicWrapper">
+
+        <div class="knTopic">
+          <h3>{{topic.title}}</h3>
+          <p>{{topic.desc}}</p>
+        </div>
+        <div *ngIf="editTopic === topic" class ="knTopicEdit">
+          <input type="text" required="required" [(ngModel)]="editTopic.title" placeholder="Title"/>
+          <textarea required="required" [(ngModel)]="editTopic.desc" rows="4"></textarea>
+        </div>
+      </div>
+      <a href="#" class="detailBtn" >Open</a>
+    </div>
+
+  </div>
+</div>
