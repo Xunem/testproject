@@ -5,18 +5,25 @@ import { HttpModule } from '@angular/http';
 import { AlertModule } from 'ng2-bootstrap/ng2-bootstrap';
 
 import { AppComponent } from './app.component';
+import { CurrentTopicsComponent } from './current-topics/current-topics.component';
+import {AppRoutingModule} from "./app-routing/app-routing.module";
+import { TopicDetailComponent } from './topic-detail/topic-detail.component';
+import {TopicServiceService} from "./topic-service.service";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CurrentTopicsComponent,
+    TopicDetailComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
+    AppRoutingModule,
     AlertModule.forRoot()
   ],
-  providers: [],
+  providers: [TopicServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
