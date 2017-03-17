@@ -9,6 +9,15 @@ import { CurrentTopicsComponent } from './current-topics/current-topics.componen
 import {AppRoutingModule} from "./app-routing/app-routing.module";
 import { TopicDetailComponent } from './topic-detail/topic-detail.component';
 import {TopicServiceService} from "./topic-service.service";
+import { AngularFireModule } from 'angularfire2';
+
+export const firebaseConfig = {
+  apiKey: 'AIzaSyBaHfPKs9LAT3AlDCrmDaf4xrnZuuaD8aQ',
+  authDomain: 'knowledgerepo-f22a0.firebaseapp.com',
+  databaseURL: 'https://knowledgerepo-f22a0.firebaseio.com',
+  storageBucket: 'knowledgerepo-f22a0.appspot.com',
+  messagingSenderId: '246535302773'
+};
 
 @NgModule({
   declarations: [
@@ -21,7 +30,8 @@ import {TopicServiceService} from "./topic-service.service";
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    AlertModule.forRoot()
+    AlertModule.forRoot(),
+    AngularFireModule.initializeApp(firebaseConfig)
   ],
   providers: [TopicServiceService],
   bootstrap: [AppComponent]

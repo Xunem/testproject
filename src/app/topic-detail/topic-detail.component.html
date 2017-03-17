@@ -1,27 +1,42 @@
 <div class="container" style="margin-top:70px;">
-  <h1 class="addBtn" (click)="addTopic()">+</h1>
-  <h1>{{currentTopic.title}}</h1>
-
+  <h1 class="addBtn" (click)="showNewTopicDialogue()">+</h1>
+  <h1>{{currentTopicTitle}}</h1>
+  <p>{{currentTopicDesc}}</p>
   <div class="row">
-    <div *ngFor="let topic of currentTopic.topics"
+    <div class="col-xl-4"  *ngIf="showNew() == true">
+      <span class = "editBtn" (click)="addTopic(newTopic)">Save</span>
+      <span class = "delBtn" (click)="hideNewTopicDialoge()">Delete</span>
+      <div class ="knTopicWrapper">
+        <div class ="knTopicEdit">
+          <input type="text" required="required" [(ngModel)]="newTopic.title" placeholder="Title"/>
+          <textarea required="required" [(ngModel)]="newTopic.desc" rows="4"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div *ngFor="let key of currentTopicSubTopicKeysObs | async"
          class="col-xl-4"
     >
-      <span *ngIf="editTopic !== topic" class = "editBtn" (click)="onSelect(topic)">Edit</span>
-      <span *ngIf="editTopic === topic" class = "editBtn" (click)="onSelect(topic)">Save</span>
-      <span *ngIf="editTopic === topic" class = "delBtn" (click)="deleteTopic(topic)">Delete</span>
+    
+    
+      <span *ngIf="editId !== key.$value" class = "editBtn" (click)="onSelect(key.$value)">Edit</span>
+      <span *ngIf="editId === key.$value" class = "editBtn" (click)="onSelect(key.$value)">Save</span>
+      <span *ngIf="editId === key.$value" class = "delBtn" (click)="deleteTopic(key.$value)">Delete</span>
       <div class ="knTopicWrapper">
 
         <div class="knTopic">
-          <h3>{{topic.title}}</h3>
-          <p>{{topic.desc}}</p>
+          <h3>{{getTopicTitle(key.$value)}}</h3>
+          <p>{{getTopicDesc(key.$value)}}</p>
         </div>
-        <div *ngIf="editTopic === topic" class ="knTopicEdit">
+        <div *ngIf="editId === key.$value" class ="knTopicEdit">
           <input type="text" required="required" [(ngModel)]="editTopic.title" placeholder="Title"/>
           <textarea required="required" [(ngModel)]="editTopic.desc" rows="4"></textarea>
         </div>
       </div>
-      <a href="#" class="detailBtn" >Open</a>
+      <a [routerLink]="['/topic', key.$value]"  routerLinkActive="active"class="detailBtn" >Open</a>
+      
     </div>
 
   </div>
+
 </div>

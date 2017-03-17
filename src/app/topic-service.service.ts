@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import {knTopic} from "./knTopic";
+import {AngularFire, FirebaseListObservable, FirebaseObjectObservable} from "angularfire2";
+
 
 @Injectable()
 export class TopicServiceService {
-  currentTopics: knTopic[] = [
+  currentTopics:knTopic[];
+ /* currentTopics: knTopic[] = [
     {
       title: 'Web Development',
       desc: 'Web development is a broad term for the work involved in developing a web site for the Internet (World Wide Web) or an intranet (a private network).',
@@ -35,30 +38,62 @@ export class TopicServiceService {
       topics: [],
       items: []
     }
-  ];
+  ];*/
 
-  constructor() {
+  items: FirebaseListObservable<knTopic[]>;
+
+  constructor(private af: AngularFire) {
+    this.items = af.database.list('/topics', {
+      query: {
+        orderByChild: 'parent',
+        equalTo: -1
+      }});
   }
 
-  getCurrentTopics(): knTopic[] {
-    return this.currentTopics;
+  getCurrentTopics(): FirebaseListObservable<knTopic[]> {
+    return this.items;
+
   }
 
   addTopic(newTopic: knTopic): void {
-
-    this.currentTopics.push(newTopic);
+    
+    const key = this.items.push(newTopic).key;
+    console.log(key);
+    if(newTopic.parent !== -1){
+      this.af.database.list('/topics/'+newTopic.parent+'/topics').push(key);
+    }
 
   }
 
-  deleteTopic(topic: knTopic): void {
-    let index = this.currentTopics.indexOf(topic);
-    this.currentTopics.splice(index, 1);
+  updateTopicTitle(key:string, updated:string):void{
+    this.items.update(key, { title: updated});
   }
 
-  getTopic(id: number): knTopic {
-    let temp:knTopic[] = this.currentTopics;
-    return this.currentTopics.find(function (d) {
-      return temp.indexOf(d) == id;
-    });
+  updateTopicDesc(key:string, updated:string):void{
+    this.items.update(key, { desc: updated});
+  }
+
+  deleteTopic(key: string): void {
+    this.items.remove(key);
+  }
+
+  getTopic(id: string): FirebaseObjectObservable<knTopic> {
+    return this.af.database.object('/topics/'+id);
+  }
+
+  getTopicTitle(id: string): FirebaseObjectObservable<any>{
+    return this.af.database.object('/topics/'+id+'/title');
+  }
+
+  getTopicDesc(id: string): FirebaseObjectObservable<any>{
+    return this.af.database.object('/topics/'+id+'/desc');
+  }
+
+  getSubTopicKeys(id: string): FirebaseListObservable<string[]>{
+    return this.af.database.list('/topics/'+id+'/topics');
+  }
+
+  getItemKeys(id: string): FirebaseListObservable<string[]>{
+    return this.af.database.list('/topics/'+id+'/items');
   }
 }
